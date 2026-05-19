@@ -6,4 +6,6 @@ import E_Commerce.demo.dto.response.ProductResponse;
 public interface ProductService {
     String createProduct(ProductRequestDTO productRequestDTO);
     ProductResponse getProduct(Long id);
+    ProductResponse updateProduct(Long id, ProductRequestDTO productRequestDTO);
+    String deleteProduct(Long id);
 }

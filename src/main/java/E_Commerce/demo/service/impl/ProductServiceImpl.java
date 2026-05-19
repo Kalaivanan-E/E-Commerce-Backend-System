@@ -33,6 +33,24 @@ public class ProductServiceImpl implements ProductService {
 
     }
 
+    public ProductResponse updateProduct(Long id, ProductRequestDTO productRequestDTO){
+        Product product = productRepo.findById(id).orElseThrow(()-> new RuntimeException("Product not found"));
+        product.setName(productRequestDTO.getName());
+        product.setDescription(productRequestDTO.getDescription());
+        product.setPrice(productRequestDTO.getPrice());
+        product.setCategory(productRequestDTO.getCategory());
+        product.setStock(productRequestDTO.getStock());
+
+        Product updatedProduct = productRepo.save(product);
+
+        return mapTOResponse(updatedProduct);
+    }
+    public String deleteProduct(Long id){
+        Product product = productRepo.findById(id).orElseThrow(()->new RuntimeException("Product not found"));
+        productRepo.delete(product);
+        return "Product deleted Successfully";
+    }
+
     public ProductResponse mapTOResponse(Product product){
         ProductResponse response = new ProductResponse();
         response.setId(product.getId());

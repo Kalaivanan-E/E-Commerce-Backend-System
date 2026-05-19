@@ -12,60 +12,82 @@ import java.util.Date;
 @Component
 public class JwtUtil {
 
-    private final String SECRET = "mysecretkeymysecretkeymysecretkey12345";
+    private final String SECRET =
+            "mysecretkeymysecretkeymysecretkey12345";
 
-    private final long ACCESS_TOKEN_EXPIRATION = 1000 * 60 * 15;
-    private final long REFRESH_TOKEN_EXPIRATION = 1000 * 60 * 60 * 24;
+    private final long ACCESS_TOKEN_EXPIRATION =
+            1000 * 60 * 15;
 
-    private Key getSignKey(){
+    private final long REFRESH_TOKEN_EXPIRATION =
+            1000 * 60 * 60 * 24;
+
+    // Generate Signing Key
+    private Key getSignKey() {
         return Keys.hmacShaKeyFor(SECRET.getBytes());
     }
 
-    // Generates Access Token
+    // Generate Access Token
+    public String generateAccessToken(String email, String role) {
 
-    public String generateAccessToken(String email){
         return Jwts.builder()
                 .setSubject(email)
+                .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION))
+                .setExpiration(
+                        new Date(
+                                System.currentTimeMillis()
+                                        + ACCESS_TOKEN_EXPIRATION
+                        )
+                )
                 .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // Generates Refresh Token
+    // Generate Refresh Token
+    public String generateRefreshToken(String email) {
 
-    public String generateRefreshToken(String email){
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION))
-                .signWith(getSignKey(),SignatureAlgorithm.HS256)
+                .setExpiration(
+                        new Date(
+                                System.currentTimeMillis()
+                                        + REFRESH_TOKEN_EXPIRATION
+                        )
+                )
+                .signWith(getSignKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     // Extract Email
-
-    public String extractEmail(String token){
+    public String extractEmail(String token) {
         return getClaims(token).getSubject();
     }
 
-    // 🔹 Validate Token
+    // Extract Role
+    public String extractRole(String token) {
+        return getClaims(token).get("role", String.class);
+    }
+
+    // Validate Token
     public boolean validateToken(String token) {
+
         try {
             getClaims(token);
             return true;
+
         } catch (Exception e) {
             return false;
         }
     }
 
-    // 🔹 Get Claims
+    // Get Claims
     private Claims getClaims(String token) {
+
         return Jwts.parserBuilder()
                 .setSigningKey(getSignKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
-
 }

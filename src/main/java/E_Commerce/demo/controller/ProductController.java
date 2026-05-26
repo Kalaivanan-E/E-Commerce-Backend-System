@@ -8,12 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class ProductController {
 
     @Autowired
     private ProductService productService;
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/product")
     public String createProduct(@RequestBody ProductRequestDTO productRequestDTO){
@@ -23,6 +26,10 @@ public class ProductController {
     @GetMapping("/product/{id}")
     public ProductResponse getproduct(@PathVariable Long id){
         return productService.getProduct(id);
+    }
+    @GetMapping("/product")
+    public List<Product> getAllProducts(){
+        return productService.getAllProducts();
     }
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/product/{id}")

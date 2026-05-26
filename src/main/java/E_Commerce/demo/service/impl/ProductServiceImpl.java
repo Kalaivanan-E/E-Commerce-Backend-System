@@ -8,6 +8,8 @@ import E_Commerce.demo.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductServiceImpl implements ProductService {
     @Autowired
@@ -49,6 +51,10 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepo.findById(id).orElseThrow(()->new RuntimeException("Product not found"));
         productRepo.delete(product);
         return "Product deleted Successfully";
+    }
+    public List<Product> getAllProducts(){
+        List<Product> product = productRepo.findAll();
+        return product;
     }
 
     public ProductResponse mapTOResponse(Product product){

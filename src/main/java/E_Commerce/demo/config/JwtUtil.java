@@ -27,7 +27,7 @@ public class JwtUtil {
     }
 
     // Generate Access Token
-    public String generateAccessToken(String email, String role) {
+    public String generateAccessToken(String email,String role) {
 
         return Jwts.builder()
                 .setSubject(email)
